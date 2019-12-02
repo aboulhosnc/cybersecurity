@@ -8,56 +8,67 @@ class passwordMatch
     // Prints "Hello, World" to the terminal window.
     public static void main(String args[]) throws IOException
     {
-        // Scanner in = new Scanner(System.in);
-        // File file = new File ("passwords.txt");
-        //
-        // //Write Content
-        // FileWriter writer = new FileWriter(file);
-        //
-        //
-        // // File file = new File("testFile.txt");
-        //
-        // //Create the file
-        // if (file.createNewFile())
-        // {
-        //     System.out.println("File is created!");
-        // } else {
-        //     System.out.println("File already exists.");
-        // }
-        //
-        //
-        //
-        //
-        //
-        // System.out.println("Enter in the username");
-        // String userName = in.nextLine();
-        // System.out.printf("Your password is %s\n", userName);
-        //
-        //
-        // System.out.println("Enter in your password");
-        // String userPassword = in.nextLine();
-        //
-        // System.out.printf("Your password is %s\n", userPassword);
-        //
-        // writer.write("");
-        // writer.close();
-        //
-        //
-        //
-        //
-        //
-        // in.close();
+        Scanner in = new Scanner(System.in);
+        
+        File file = new File("passwords.txt");
 
-        newFileOpen();
+        boolean fvar = file.createNewFile();
+	     if (fvar){
+	          System.out.println("File has been created successfully");
+	     }
+	     else{
+	          System.out.println("File already present at the specified location");
+	     }
+        
+        
+        FileWriter writer = new FileWriter(file);
+        
+        System.out.println("Enter in the username");
+        // String userName = in.nextLine();
+        String userName = "test";
+        System.out.printf("Your username is %s\n", userName);
+        
+        
+        System.out.println("Enter in your password");
+        // String userPassword = in.nextLine();
+        String userPassword = "aboulhosn";
+        
+        System.out.printf("Your password is %s\n", userPassword);
+
+        String systemInput = userName + " " + userPassword;
+        System.out.printf("%s\n", systemInput);
+
+
+        try{    
+            writer.write(systemInput);
+            writer.write("test");
+            writer.close();
+              
+           }
+           catch(Exception e)
+           {System.out.println(e);}    
+           System.out.println("Success...");    
+         
+        
+       
+        
+        
+        
+        
+        in.close();
+
+        // newFileOpen();
 
 
     }
 
 
-private static void newFileOpen ()
-{
-  System.out.println("Test for class");
-}
+// private static void newFileOpen ()
+// {
+//   System.out.println("Test for class");
+// }
+
+// private static void new
 
 
 

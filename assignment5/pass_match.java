@@ -13,7 +13,7 @@ class passwordMatch
     public static void main(String args[]) throws IOException
     {
         Scanner in = new Scanner(System.in);
-        in.useDelimiter(System.lineSeparator());
+        // in.useDelimiter(System.lineSeparator());
 
         // keep track of log in attempts
         int loginAttempts = 3;
@@ -43,7 +43,7 @@ class passwordMatch
          System.out.println("If you want to try again to log in type: 1");
          System.out.println("If you want to register as a new user type : 2");
          System.out.println("If you want to exit type: 3");
-         userDecision = in.next();
+         userDecision = in.nextLine();
 
          if(userDecision.equals("1") && loginAttempts > 0)
          {
@@ -51,17 +51,12 @@ class passwordMatch
            loginAttempts --;
            System.out.printf("You have %d log in attempts left\n", loginAttempts );
          }
-         else if(userDecision.equals("1") && loginAttempts <= 0)
-         {
-           System.out.println("You have exceeded the mamixum amount of log in attempts");
-           System.out.println("Goodbye");
-           System.exit(0);
-         }
+
          else if ( userDecision.equals("2"))
          {
            // registerNewUser();
-           System.out.println("Register here");
-           break;
+           registerNewUser();
+           // break;
          }
          else if ( userDecision.equals("3"))
          {
@@ -74,6 +69,14 @@ class passwordMatch
            System.out.println("Invalid Input Please Try again");
          }
 
+         if( loginAttempts <= 0)
+         {
+           System.out.println("You have exceeded the mamixum amount of log in attempts");
+           System.out.println("Goodbye");
+           System.exit(0);
+         }
+         // System.out.println("test");
+         // userDecision = in.next();
        }
 
 
@@ -82,41 +85,6 @@ class passwordMatch
        //   System.out.println("register class here");
        // }
 
-
-        // FileWriter writer = new FileWriter(file, true);
-        //
-        // System.out.println("Enter in the username");
-        // // String userName = in.nextLine();
-        // String userName = "test";
-        // System.out.printf("Your username is %s\n", userName);
-        //
-        //
-        // System.out.println("Enter in your password");
-        // // String userPassword = in.nextLine();
-        // String userPassword = "aboulhosn";
-        //
-        // System.out.printf("Your password is %s\n", userPassword);
-        //
-        // String systemInput = userName + " " + userPassword;
-        // System.out.printf("%s\n", systemInput);
-        //
-        //
-        //
-        //
-        //
-        // try{
-        //     writer.write(systemInput);
-        //     writer.write("\n");
-        //
-        //    }
-        //    catch(Exception e)
-        //    {System.out.println(e);}
-        //    System.out.println("Success...");
-        //
-        //    writer.close();
-
-
-
         in.close();
 
         // newFileOpen();
@@ -124,22 +92,59 @@ class passwordMatch
 
     }
 
-    private static  void newFileOpen () throws IOException
-    {
+private static  void newFileOpen () throws IOException
+{
 
     // File file = new File("passwords.txt");
-    File file = new File("test2.txt");
+      File file = new File("test2.txt");
 
-    boolean fvar = file.createNewFile();
-    if (fvar){
-        System.out.println("File has been created successfully");
-    }
-    else{
-        System.out.println("File already present at the specified location");
-    }
+      boolean fvar = file.createNewFile();
+      if (fvar){
+          System.out.println("File has been created successfully");
+      }
+      else{
+          System.out.println("File already present at the specified location");
+      }
 
-    }
+}
 
+private static void registerNewUser() throws IOException
+{
+  Scanner in = new Scanner(System.in);
+  File file = new File("test2.txt");
+  FileWriter writer = new FileWriter(file, true);
+
+  System.out.println("Enter in the username");
+  String userName = in.nextLine();
+  // String userName = "test";
+  System.out.printf("Your username is %s\n", userName);
+
+
+  System.out.println("Enter in your password");
+  String userPassword = in.nextLine();
+  // String userPassword = "aboulhosn";
+
+  System.out.printf("Your password is %s\n", userPassword);
+
+  String systemInput = userName + " " + userPassword;
+  System.out.printf("%s\n", systemInput);
+
+
+
+
+
+  try{
+      writer.write(systemInput);
+      writer.write("\n");
+
+     }
+     catch(Exception e)
+     {System.out.println(e);}
+     System.out.println("new user Created");
+
+     writer.close();
+
+}
 
 private static void  checkUserName () throws IOException
 {
@@ -185,11 +190,10 @@ private static void  checkUserName () throws IOException
     else
     {
       System.out.println("Password does not match");
-
     }
 
-     scanner.close();
-     scan.close();
+     // scanner.close();
+     // scan.close();
    }
 
 }

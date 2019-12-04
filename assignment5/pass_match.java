@@ -104,22 +104,27 @@ private static boolean checkNamePassword(String user,String password, File file)
 {
   Scanner scanner = new Scanner(file);
   boolean validCombo = true;
+
+  String userMatch = namePasswordMatch(file, user,  password);
+
+  if (userMatch.equals("2"))
+  {
+    System.out.println("User name is taken already. Please Try again");
+    validCombo =  false;
+    // break;
+  }
+
   while (scanner.hasNextLine())
   {
-    String [] userPair  = scanner.nextLine().split(" ");
-    String userSplit = userPair[0];
-    String passSplit = userPair[1];
-    String [] combo = saltProcess(user,password);
-    String userName = generate256Hash(combo[0]);
-    System.out.println("current login :" + userSplit);
-    System.out.println("hashed user choice : " + userName);
+    // String [] userPair  = scanner.nextLine().split(" ");
+    // String userSplit = userPair[0];
+    // String passSplit = userPair[1];
+    // String [] combo = saltProcess(user,password);
+    // String userName = generate256Hash(combo[0]);
+    // System.out.println("current login :" + userSplit);
+    // System.out.println("hashed user choice : " + userName);
 
-    if (userSplit.equals(userName))
-    {
-      System.out.println("User name is taken already. Please Try again");
-      validCombo =  false;
-      // break;
-    }
+
 
     if(password.length() <= 7)
     {
@@ -223,6 +228,40 @@ private static void registerNewUser(File file) throws IOException, NoSuchAlgorit
 
 }
 
+private static String namePasswordMatch(File file, String userName, String userPassword) throws IOException, NoSuchAlgorithmException
+{
+  Scanner scanner = new Scanner(file);
+  int lineNum = 1;
+
+  String [] combo = saltProcess(userName,userPassword);
+  userName = combo[0];
+  userPassword = combo[1];
+  userName = generate256Hash(userName);
+  userPassword = generate256Hash(userPassword);
+
+  while (scanner.hasNextLine())
+  {
+    String [] userPair  = scanner.nextLine().split(" ");
+    String userSplit = userPair[0];
+    String passSplit = userPair[1];
+
+    if(userSplit.equals(userName) && passSplit.equals(userPassword))
+    {
+      System.out.printf("name from file at line %d is : %s\n",lineNum, userSplit);
+      System.out.printf("password from file at line %d is : %s\n",lineNum, passSplit);
+      System.out.println("--------------------");
+      return "1";
+    }
+    else if(userSplit.equals(userName) )
+    {
+      return "2";
+    }
+
+    lineNum ++;
+  }
+  return "3";
+
+}
 
 private static void  checkUserLogin (File file) throws IOException, NoSuchAlgorithmException
 {
@@ -235,36 +274,41 @@ private static void  checkUserLogin (File file) throws IOException, NoSuchAlgori
   System.out.println("What is your password");
   String userPassword = scan.nextLine();
 
-  String [] combo = saltProcess(userName,userPassword);
-  userName = combo[0];
-  userPassword = combo[1];
-  userName = generate256Hash(userName);
-  userPassword = generate256Hash(userPassword);
+  // String [] combo = saltProcess(userName,userPassword);
+  // userName = combo[0];
+  // userPassword = combo[1];
+  // userName = generate256Hash(userName);
+  // userPassword = generate256Hash(userPassword);
+
+
 
   int lineNum = 1;
-  boolean  currentUser = false;
+  // boolean  currentUser = false;
 
-   while (scanner.hasNextLine())
-   {
-     String [] userPair  = scanner.nextLine().split(" ");
-     String userSplit = userPair[0];
-     String passSplit = userPair[1];
+  String guessMatch = namePasswordMatch(file, userName, userPassword);
 
+   // while (scanner.hasNextLine())
+   // {
+   //   String [] userPair  = scanner.nextLine().split(" ");
+   //   String userSplit = userPair[0];
+   //   String passSplit = userPair[1];
+   //
+   //
+   //   if (userSplit.equals(userName) && passSplit.equals(userPassword))
+   //   {
+   //     System.out.printf("name from file at line %d is : %s\n",lineNum, userSplit);
+   //     System.out.printf("password from file at line %d is : %s\n",lineNum, passSplit);
+   //     System.out.println("--------------------");
+   //     currentUser = true;
+   //
+   //     // break;
+   //     // System.out.println("You ")
+   //   }
+   //   lineNum++
+   //
+   // }
 
-     if (userSplit.equals(userName) && passSplit.equals(userPassword))
-     {
-       System.out.printf("name from file at line %d is : %s\n",lineNum, userSplit);
-       System.out.printf("password from file at line %d is : %s\n",lineNum, passSplit);
-       System.out.println("--------------------");
-       currentUser = true;
-
-       // break;
-       // System.out.println("You ")
-     }
-     lineNum ++;
-   }
-
-    if(currentUser)
+    if(guessMatch.equals("1"))
     {
       System.out.println("You have logged in");
       System.out.println("Welcome !");

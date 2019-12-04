@@ -1,6 +1,14 @@
 import java.util.Scanner;
 import java.io.*;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 class passwordMatch
 {
@@ -10,7 +18,7 @@ class passwordMatch
 
     // Your program begins with a call to main().
     // Prints "Hello, World" to the terminal window.
-    public static void main(String args[]) throws IOException
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException
     {
         Scanner in = new Scanner(System.in);
         // in.useDelimiter(System.lineSeparator());
@@ -19,21 +27,8 @@ class passwordMatch
         int loginAttempts = 3;
         boolean loginProgram = true;
 
-
-       //  // File file = new File("passwords.txt");
-       //  File file = new File("test2.txt");
-       //
-       //  boolean fvar = file.createNewFile();
-	     // if (fvar){
-	     //      System.out.println("File has been created successfully");
-	     // }
-	     // else{
-	     //      System.out.println("File already present at the specified location");
-	     // }
-
-       // scanning file
-
-       newFileOpen();
+       // File file = newFileOpen("test2.txt");
+       File file = newFileOpen("passwords.txt");
 
        // checkUserName();
        // System.our.println("To Log in ")
@@ -47,7 +42,7 @@ class passwordMatch
 
          if(userDecision.equals("1") && loginAttempts > 0)
          {
-           checkUserName();
+           checkUserLogin(file);
            loginAttempts --;
            System.out.printf("You have %d log in attempts left\n", loginAttempts );
          }
@@ -55,7 +50,7 @@ class passwordMatch
          else if ( userDecision.equals("2"))
          {
            // registerNewUser();
-           registerNewUser();
+           registerNewUser(file);
            // break;
          }
          else if ( userDecision.equals("3"))
@@ -80,23 +75,17 @@ class passwordMatch
        }
 
 
-       // if(userDecision.equals("register")
-       // {
-       //   System.out.println("register class here");
-       // }
-
         in.close();
 
-        // newFileOpen();
 
 
     }
 
-private static  void newFileOpen () throws IOException
+private static  File newFileOpen (String textFile) throws IOException
 {
 
     // File file = new File("passwords.txt");
-      File file = new File("test2.txt");
+      File file = new File(textFile);
 
       boolean fvar = file.createNewFile();
       if (fvar){
@@ -106,12 +95,85 @@ private static  void newFileOpen () throws IOException
           System.out.println("File already present at the specified location");
       }
 
+      return file;
+
 }
 
-private static void registerNewUser() throws IOException
+
+private static boolean checkNamePassword(String user,String password, File file) throws IOException, NoSuchAlgorithmException
+{
+  Scanner scanner = new Scanner(file);
+  boolean validCombo = true;
+  while (scanner.hasNextLine())
+  {
+    String [] userPair  = scanner.nextLine().split(" ");
+    String userSplit = userPair[0];
+    String passSplit = userPair[1];
+    String [] combo = saltProcess(user,password);
+    String userName = generate256Hash(combo[0]);
+    System.out.println("current login :" + userSplit);
+    System.out.println("hashed user choice : " + userName);
+
+    if (userSplit.equals(userName))
+    {
+      System.out.println("User name is taken already. Please Try again");
+      validCombo =  false;
+      // break;
+    }
+
+    if(password.length() <= 7)
+    {
+      System.out.println("Password length must be more than 8 characters");
+      validCombo = false;
+    }
+    // String multiplenumber = "[\\d]{4,}";
+    String multiplenumber = ".*[\\d]{4}.*";
+    boolean numberMatch = Pattern.matches(multiplenumber, password);
+    if(numberMatch)
+    {
+      System.out.println("Too many consecutive Numbers");
+      return false;
+    }
+    String multipleLetter = ".*[a-zA-Z]{4}.*";
+    boolean letterMatch = Pattern.matches(multipleLetter, password);
+    if(letterMatch)
+    {
+      System.out.println("Too many consecutive Letters");
+      validCombo =  false;
+    }
+
+    String numberLetter = ".*(?=.*[a-zA-Z])(?=.*[\\d]).*";
+    boolean containNumLetter = !Pattern.matches(numberLetter, password);
+    if(containNumLetter)
+    {
+      System.out.println("Password must contain both Numbers and Letters");
+      validCombo =  false;
+    }
+    if(validCombo = false)
+    {
+      return false;
+    }
+  }
+  return true;
+  // System.out.println("name and password is valid: " + validCombo);
+  // return false;
+    // if (validCombo)
+    // {
+    //   // System.out.println("test for true name");
+    //   return true;
+    // }
+    // else
+    // {
+    //   // System.out.println("test for false name");
+    //   return false;
+    // }
+}
+
+
+private static void registerNewUser(File file) throws IOException, NoSuchAlgorithmException
 {
   Scanner in = new Scanner(System.in);
-  File file = new File("test2.txt");
+  // File file = new File("test2.txt");
   FileWriter writer = new FileWriter(file, true);
 
   System.out.println("Enter in the username");
@@ -122,39 +184,63 @@ private static void registerNewUser() throws IOException
 
   System.out.println("Enter in your password");
   String userPassword = in.nextLine();
+  // String userPassword = "abc123cha";
   // String userPassword = "aboulhosn";
 
   System.out.printf("Your password is %s\n", userPassword);
+// String systemInput = userName + " " + userPassword;
 
-  String systemInput = userName + " " + userPassword;
-  System.out.printf("%s\n", systemInput);
+// boolean validNamePair = checkNamePassword(userName,userPassword, file);
+
+    if(checkNamePassword(userName,userPassword, file))
+    // if(validNamePair)
+    {
+      String [] combo = saltProcess( userName,userPassword);
+      userName = combo[0];
+      userPassword = combo[1];
+      userName = generate256Hash(userName);
+      userPassword = generate256Hash(userPassword);
+      String systemInput = userName + " " + userPassword;
+
+      try{
+          writer.write(systemInput);
+          writer.write("\n");
+         }
+         catch(Exception e)
+         {System.out.println(e);}
+         System.out.println("New user Created\n");
+         System.out.println("--------------------");
+         // System.out.printf("%s\n", systemInput);
 
 
-
-
-
-  try{
-      writer.write(systemInput);
-      writer.write("\n");
-
-     }
-     catch(Exception e)
-     {System.out.println(e);}
-     System.out.println("new user Created");
-
-     writer.close();
+         writer.close();
+    }
+    else
+    {
+      System.out.println("New user not Created\n");
+      System.out.println("--------------------");
+    }
 
 }
 
-private static void  checkUserName () throws IOException
+
+private static void  checkUserLogin (File file) throws IOException, NoSuchAlgorithmException
 {
-  Scanner scanner = new Scanner(new File("test2.txt"));
+  // Scanner scanner = new Scanner(new File("test2.txt"));
+  Scanner scanner = new Scanner(file);
   Scanner scan = new Scanner(System.in);
   System.out.println("What is your username");
   String userName = scan.nextLine();
   //
   System.out.println("What is your password");
   String userPassword = scan.nextLine();
+
+  String [] combo = saltProcess(userName,userPassword);
+  userName = combo[0];
+  userPassword = combo[1];
+  userName = generate256Hash(userName);
+  userPassword = generate256Hash(userPassword);
+
   int lineNum = 1;
   boolean  currentUser = false;
 
@@ -165,16 +251,14 @@ private static void  checkUserName () throws IOException
      String passSplit = userPair[1];
 
 
-
-
-
      if (userSplit.equals(userName) && passSplit.equals(userPassword))
      {
        System.out.printf("name from file at line %d is : %s\n",lineNum, userSplit);
        System.out.printf("password from file at line %d is : %s\n",lineNum, passSplit);
+       System.out.println("--------------------");
        currentUser = true;
 
-       break;
+       // break;
        // System.out.println("You ")
      }
      lineNum ++;
@@ -189,11 +273,32 @@ private static void  checkUserName () throws IOException
     }
     else
     {
-      System.out.println("Password does not match");
+      System.out.println("UserName and Password does not match");
+      System.out.println(userName);
+      System.out.println(userPassword);
     }
 
-     // scanner.close();
-     // scan.close();
-   }
+}
+
+private static String generate256Hash (String value) throws NoSuchAlgorithmException
+{
+ MessageDigest md = MessageDigest.getInstance("SHA-256");
+ byte[] digest = md.digest(value.getBytes(StandardCharsets.UTF_8));
+ String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
+ return sha256;
+}
+
+ private static String[] saltProcess(String user, String password)
+ {
+   String [] combo = new  String [2];
+   String saltOriginal = "q1C7XNnAa8ptgEhq3xeC";
+   String saltpassWord = "62iJMBZnurFEWz58Y2KA";
+   combo[0] = saltOriginal + user;
+   combo[1] = saltpassWord + password + combo[0];
+
+   // return (user, password);
+   return combo;
+
+ }
 
 }

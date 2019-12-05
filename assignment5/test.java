@@ -9,42 +9,20 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-
+import java.util.Random;
 
 class test
 {
 
-  // public static byte[] getSHA(String input) throws NoSuchAlgorithmException
-  //     {
-  //         // Static getInstance method is called with hashing SHA
-  //         MessageDigest md = MessageDigest.getInstance("SHA-256");
-  //
-  //         // digest() method called
-  //         // to calculate message digest of an input
-  //         // and return array of byte
-  //         return md.digest(input.getBytes(StandardCharsets.UTF_8));
-  //     }
-  //
-  //     public static String toHexString(byte[] hash)
-  //     {
-  //         // Convert byte array into signum representation
-  //         BigInteger number = new BigInteger(1, hash);
-  //
-  //         // Convert message digest into hex value
-  //         StringBuilder hexString = new StringBuilder(number.toString(16));
-  //
-  //         // Pad with leading zeros
-  //         while (hexString.length() < 32)
-  //         {
-  //             hexString.insert(0, '0');
-  //         }
-  //
-  //         return hexString.toString();
-  //     }
+
 
   public static void main(String args[]) throws NoSuchAlgorithmException
   {
     Scanner in = new Scanner(System.in);
+
+// int n = 20;
+// System.out.println(RandomString.getAlphaNumericString(n));
+
 
   // System.out.println("test");
   String test = testClass("String", 5);
@@ -67,7 +45,15 @@ class test
   String password1 = generate256Hash(password);
   String password3 = generate256Hash(password2);
 
-
+  String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
+          StringBuilder salt = new StringBuilder();
+          Random rnd = new Random();
+          while (salt.length() < 18) { // length of the random string.
+              int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+              salt.append(SALTCHARS.charAt(index));
+          }
+          String saltStr = salt.toString();
+          System.out.println ("Random salt String is : " + saltStr);
 
         // print SHA-256 Message Digest
         System.out.println("password Aboulhosn is : " + password1);
@@ -133,6 +119,33 @@ class test
 
 
   }
+
+private  static String getAlphaNumericString(int n)
+      {
+
+          // chose a Character random from this String
+          String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                      + "0123456789"
+                                      + "abcdefghijklmnopqrstuvxyz";
+
+          // create StringBuffer size of AlphaNumericString
+          StringBuilder sb = new StringBuilder(n);
+
+          for (int i = 0; i < n; i++) {
+
+              // generate a random number between
+              // 0 to AlphaNumericString variable length
+              int index
+                  = (int)(AlphaNumericString.length()
+                          * Math.random());
+
+              // add Character one by one in end of sb
+              sb.append(AlphaNumericString
+                            .charAt(index));
+          }
+
+          return sb.toString();
+      }
 private static String generate256Hash (String value) throws NoSuchAlgorithmException
 {
   MessageDigest md = MessageDigest.getInstance("SHA-256");

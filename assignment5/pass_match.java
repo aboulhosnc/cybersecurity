@@ -113,6 +113,10 @@ private static boolean checkNamePassword(String user,String password, File file)
     validCombo =  false;
     // break;
   }
+  else
+  {
+    System.out.println()
+  }
 
   while (scanner.hasNextLine())
   {
@@ -193,6 +197,7 @@ private static void registerNewUser(File file) throws IOException, NoSuchAlgorit
   // String userPassword = "aboulhosn";
 
   System.out.printf("Your password is %s\n", userPassword);
+  String salt;
 // String systemInput = userName + " " + userPassword;
 
 // boolean validNamePair = checkNamePassword(userName,userPassword, file);
@@ -200,12 +205,12 @@ private static void registerNewUser(File file) throws IOException, NoSuchAlgorit
     if(checkNamePassword(userName,userPassword, file))
     // if(validNamePair)
     {
-      String [] combo = saltProcess( userName,userPassword);
-      userName = combo[0];
+      String [] combo = saltProcess(,userPassword);
+      salt = combo[0];
       userPassword = combo[1];
-      userName = generate256Hash(userName);
+      // userName = generate256Hash(userName);
       userPassword = generate256Hash(userPassword);
-      String systemInput = userName + " " + userPassword;
+      String systemInput = userName + " " + userPassword + " " + salt
 
       try{
           writer.write(systemInput);
@@ -228,15 +233,16 @@ private static void registerNewUser(File file) throws IOException, NoSuchAlgorit
 
 }
 
+
 private static String namePasswordMatch(File file, String userName, String userPassword) throws IOException, NoSuchAlgorithmException
 {
   Scanner scanner = new Scanner(file);
   int lineNum = 1;
 
-  String [] combo = saltProcess(userName,userPassword);
-  userName = combo[0];
+  // String [] combo = saltProcess(userPassword);
+  // userName = combo[0];
   userPassword = combo[1];
-  userName = generate256Hash(userName);
+  // userName = generate256Hash(userName);
   userPassword = generate256Hash(userPassword);
 
   while (scanner.hasNextLine())
@@ -244,6 +250,7 @@ private static String namePasswordMatch(File file, String userName, String userP
     String [] userPair  = scanner.nextLine().split(" ");
     String userSplit = userPair[0];
     String passSplit = userPair[1];
+    String saltSplit = userPair[2];
 
     if(userSplit.equals(userName) && passSplit.equals(userPassword))
     {
@@ -332,13 +339,22 @@ private static String generate256Hash (String value) throws NoSuchAlgorithmExcep
  return sha256;
 }
 
- private static String[] saltProcess(String user, String password)
+ private static String[] saltProcess( String password)
  {
    String [] combo = new  String [2];
-   String saltOriginal = "q1C7XNnAa8ptgEhq3xeC";
-   String saltpassWord = "62iJMBZnurFEWz58Y2KA";
-   combo[0] = saltOriginal + user;
-   combo[1] = saltpassWord + password + combo[0];
+   String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
+           StringBuilder salt = new StringBuilder();
+           Random rnd = new Random();
+           while (salt.length() < 18) { // length of the random string.
+               int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+               salt.append(SALTCHARS.charAt(index));
+           }
+           String saltStr = salt.toString();
+           // System.out.println ("Random salt String is : " + saltStr);
+   // String saltOriginal = "q1C7XNnAa8ptgEhq3xeC";
+   // String saltpassWord = "62iJMBZnurFEWz58Y2KA";
+   combo[0] = saltStr;
+   combo[1] = password + combo[0];
 
    // return (user, password);
    return combo;

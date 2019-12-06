@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.Random; 
+import java.util.Random;
 
 class passwordMatch
 {
@@ -105,7 +105,7 @@ private static boolean checkNamePassword(String user,String password, File file)
 {
   Scanner scanner = new Scanner(file);
   boolean validCombo = true;
-
+  // System.out.println(" 0 : Valid combo is :" + validCombo);
   while (scanner.hasNextLine())
   {
     String [] userPair  = scanner.nextLine().split(" ");
@@ -118,7 +118,7 @@ private static boolean checkNamePassword(String user,String password, File file)
 
     if (user.equals(userSplit))
     {
-      System.out.println("User name is taken already. Please Try again");
+      // System.out.println("User name is taken already. Please Try again");
       // System.out.println(" 1 : Valid combo is :" + validCombo);
       validCombo =  false;
       // break;
@@ -126,7 +126,8 @@ private static boolean checkNamePassword(String user,String password, File file)
 
     if(password.length() <= 7)
     {
-      System.out.println("Password length must be more than 8 characters");
+      // System.out.println("Password length must be more than 8 characters");
+      // System.out.println(" 2 : Valid combo is :" + validCombo);
       validCombo = false;
     }
     // String multiplenumber = "[\\d]{4,}";
@@ -135,13 +136,15 @@ private static boolean checkNamePassword(String user,String password, File file)
     if(numberMatch)
     {
       System.out.println("Too many consecutive Numbers");
-      return false;
+      System.out.println(" 3 : Valid combo is :" + validCombo);
+      validCombo =  false;
     }
     String multipleLetter = ".*[a-zA-Z]{4}.*";
     boolean letterMatch = Pattern.matches(multipleLetter, password);
     if(letterMatch)
     {
-      System.out.println("Too many consecutive Letters");
+      // System.out.println("Too many consecutive Letters");
+      // System.out.println(" 4 : Valid combo is :" + validCombo);
       validCombo =  false;
     }
 
@@ -149,32 +152,33 @@ private static boolean checkNamePassword(String user,String password, File file)
     boolean containNumLetter = !Pattern.matches(numberLetter, password);
     if(containNumLetter)
     {
-      System.out.println("Password must contain both Numbers and Letters");
+      // System.out.println("Password must contain both Numbers and Letters");
+      // System.out.println(" 5 : Valid combo is :" + validCombo);
       validCombo =  false;
     }
 
-    if(validCombo = false)
+    if(!validCombo)
     {
-      System.out.println("2: Test for false valid combo:");
-      System.out.println("Valid combo is inside while loop :" + validCombo);
-      // return false;
-      break;
-    }
-    
-  }
-  if(!validCombo)
-    {
-      // System.out.println("3: Test for false valid combo:");
-      // System.out.println("Valid combo is outside while loop :" + validCombo);
+      // System.out.println("6: Test for false valid combo:");
+      // System.out.println("Valid combo is inside while loop :" + validCombo);
       return false;
       // break;
     }
-  else {
-    // System.out.println("4: Test for true valid combo outsidde wile loop: ");
-    // System.out.println("Valid combo is outside while loop :" + validCombo);
-  return true;
+
   }
-  
+  // if(!validCombo)
+  //   {
+  //     System.out.println("7: Test for false valid combo:");
+  //     System.out.println("Valid combo is outside while loop :" + validCombo);
+  //     return false;
+  //     // break;
+  //   }
+  // else {
+  //   System.out.println("8: Test for true valid combo outside wile loop: ");
+  //   System.out.println("Valid combo is outside while loop :" + validCombo);
+  // return true;
+  // }
+  return true;
 
 }
 
@@ -234,42 +238,6 @@ boolean validNamePair = checkNamePassword(userName,userPassword, file);
 }
 
 
-// private static String namePasswordMatch(File file, String userName, String userPassword) throws IOException, NoSuchAlgorithmException
-// {
-//   Scanner scanner = new Scanner(file);
-//   int lineNum = 1;
-
-//   // String [] combo = saltProcess(userPassword);
-//   // userName = combo[0];
-//   userPassword = combo[1];
-//   // userName = generate256Hash(userName);
-//   userPassword = generate256Hash(userPassword);
-
-//   while (scanner.hasNextLine())
-//   {
-//     String [] userPair  = scanner.nextLine().split(" ");
-//     String userSplit = userPair[0];
-//     String passSplit = userPair[1];
-//     String saltSplit = userPair[2];
-
-//     if(userSplit.equals(userName) && passSplit.equals(userPassword))
-//     {
-//       System.out.printf("name from file at line %d is : %s\n",lineNum, userSplit);
-//       System.out.printf("password from file at line %d is : %s\n",lineNum, passSplit);
-//       System.out.println("--------------------");
-//       return "1";
-//     }
-//     else if(userSplit.equals(userName) )
-//     {
-//       return "2";
-//     }
-
-//     lineNum ++;
-//   }
-//   return "3";
-
-// }
-
 private static void  checkUserLogin (File file) throws IOException, NoSuchAlgorithmException
 {
   // Scanner scanner = new Scanner(new File("test2.txt"));
@@ -300,20 +268,20 @@ private static void  checkUserLogin (File file) throws IOException, NoSuchAlgori
      String userSplit = userPair[0];
      String passSplit = userPair[1];
      String saltSplit = userPair[2];
-   
-   
+
+
      if (userSplit.equals(userName) && passSplit.equals(generate256Hash(userPassword + saltSplit)))
      {
        System.out.printf("name from file at line %d is : %s\n",lineNum, userSplit);
        System.out.printf("password from file at line %d is : %s\n",lineNum, passSplit);
        System.out.println("--------------------");
        currentUser = true;
-   
+
        // break;
        // System.out.println("You ")
      }
      lineNum ++;
-   
+
    }
 
     if(currentUser)

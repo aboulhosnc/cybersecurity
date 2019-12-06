@@ -27,7 +27,7 @@ class passwordMatch
 
        // File file = newFileOpen("test2.txt");
        File file = newFileOpen("passwords.txt");
-       
+
 
        // checkUserName();
        // System.our.println("To Log in ")
@@ -37,7 +37,7 @@ class passwordMatch
          System.out.println("If you want to try again to log in type: 1");
          System.out.println("If you want to register as a new user type : 2");
          System.out.println("If you want to exit type: 3");
-         
+
          // For testing
          userDecision = in.nextLine();
         //  userDecision = "2";
@@ -46,10 +46,11 @@ class passwordMatch
          {
            System.out.println("--------------------");
            System.out.println("You have chosen to login");
+           System.out.printf("You have %d log in attempts left\n", loginAttempts );
            System.out.println("--------------------");
            checkUserLogin(file);
            loginAttempts --;
-           System.out.printf("You have %d log in attempts left\n", loginAttempts );
+
          }
 
          else if ( userDecision.equals("2"))
@@ -57,6 +58,8 @@ class passwordMatch
            // registerNewUser();
            System.out.println("--------------------");
            System.out.println("You have chosen to Register as a New User");
+           System.out.println("Rules for Registration\nThe username must be unique\nThe password cannot be common or shorter than 8 characters");
+           System.out.println("The password must contain letters and numbers\nThe password must not have 4 repeating or consecutive or reverse letters or numbers\nRules apply for alphabet or the qwerty keyboard");
            System.out.println("--------------------");
            registerNewUser(file);
            // break;
@@ -90,7 +93,7 @@ private static  File newFileOpen (String textFile) throws IOException
 {
     // File file = new File("passwords.txt");
       File file = new File(textFile);
-      
+
 
       boolean fvar = file.createNewFile();
       if (fvar){
@@ -113,7 +116,7 @@ private static boolean checkNamePassword(String user,String password, File file)
   {
     String [] userPair  = scanner.nextLine().split(" ");
     String userSplit = userPair[0];
-  
+
     if (user.equals(userSplit))
     {
       System.out.println("User name is taken already. Please Try again");
@@ -174,9 +177,9 @@ private static boolean checkNamePassword(String user,String password, File file)
     {
       return true;
     }
-  
- 
-  
+
+
+
 
 }
 public static boolean  commonPasswordMatch (String password)
@@ -190,7 +193,7 @@ public static boolean  commonPasswordMatch (String password)
     " corvette bigdog cheese matthew 121212 patrick martin freedom ginger blowjob nicole sparky yellow camaro secret dick falcon taylor 111111 131313 123123 bitch hello scooter" +
     " please porsche guitar chelsea black diamond nascar jackson cameron 654321 computer amanda wizard xxxxxxxx money phoenix mickey bailey knight iceman tigers purple andrea horny" +
     " dakota aaaaaa player sunshine morgan starwars boomer cowboys edward charles girls booboo coffee xxxxxx bulldog ncc1701 rabbit peanut john johnny gandalf spanky winter brandy" +
-    " compaq carlos tennis james mike brandon fender anthony blowme ferrari cookie chicken maverick chicago joseph diablo sexsex hardcore 666666 willie welcome chris panther yamaha" + 
+    " compaq carlos tennis james mike brandon fender anthony blowme ferrari cookie chicken maverick chicago joseph diablo sexsex hardcore 666666 willie welcome chris panther yamaha" +
     "justin banana driver marine angels fishing david maddog hooters wilson butthead dennis fucking captain bigdick chester smokey xavier steven viking snoopy blue eagles winner samantha" +
     " house miller flower jack firebird butter united turtle steelers tiffany zxcvbn tomcat golf bond007 bear tiger doctor gateway gators angel junior thx1138 porno badboy debbie" +
     " spider melissa booger 1212 flyers fish porn matrix teens scooby jason walter cumshot boston braves yankee lover barney victor tucker princess mercedes 5150 doggie zzzzzz" +
@@ -204,7 +207,7 @@ public static boolean  commonPasswordMatch (String password)
     " danielle beaver 4321 4128 runner swimming dolphin gordon casper stupid shit saturn gemini apples august 3333 canada blazer cumming hunting kitty rainbow 112233 arthur cream calvin" +
     " shaved surfer samson kelly paul mine king racing 5555 eagle hentai newyork little redwings smith sticky cocacola animal broncos private skippy marvin blondes enjoy girl apollo" +
     " parker qwert time sydney women voodoo magnum juice abgrtyu 777777 dreams maxwell music rush2112 russia scorpion rebecca tester mistress phantom billy 6666 albert";
-    
+
     int testNum = commonPasswords.length();
     int numLength = password.length();
     boolean commonPaswordMatch;
@@ -355,7 +358,7 @@ private static void  checkUserLogin (File file) throws IOException, NoSuchAlgori
   System.out.println("What is your password");
   String userPassword = scan.nextLine();
 
-  
+
 
   int lineNum = 1;
   boolean  currentUser = false;
